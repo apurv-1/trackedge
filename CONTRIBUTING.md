@@ -26,6 +26,9 @@ If gestures stop working, remove TrackEdge from System Settings > Privacy & Secu
 - `Sources/TrackEdgeCore` holds the gesture engine.
   It turns touch frames into actions and has no AppKit dependency, so every gesture rule has a unit test.
 - `Sources/TrackEdge` is the menu bar app.
+- `web` is the website, built with Astro.
+  Run `npm install` and `npm run dev` inside it to work on the site.
+  Every push to `main` that changes `web/` deploys it to GitHub Pages, and so does every new release.
   It owns devices, system actions, the event tap, and the SwiftUI interface.
 
 ## Rules for changes

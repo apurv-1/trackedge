@@ -7,6 +7,7 @@ Slide a finger along the right edge to change volume, or along the left edge to 
 macOS shows its own volume and brightness display, the same one the keyboard keys show.
 
 TrackEdge is a free, open-source menu bar app for macOS 13 and later.
+See it in action at [apurv-1.github.io/trackedge](https://apurv-1.github.io/trackedge/).
 It was inspired by [EdgeBar](https://edgebar.xyz) and is not affiliated with it.
 
 ## Gestures
