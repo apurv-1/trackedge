@@ -28,7 +28,9 @@ If gestures stop working, remove TrackEdge from System Settings > Privacy & Secu
 - `Sources/TrackEdge` is the menu bar app.
 - `web` is the website, built with Astro.
   Run `npm install` and `npm run dev` inside it to work on the site.
-  Every push to `main` that changes `web/` deploys it to GitHub Pages, and so does every new release.
+  To publish it, open Actions > Website > Run workflow on `main`.
+  Like releases, only the repository owner or the accounts in `RELEASE_ACTORS` can run it.
+  The site refreshes its star count, version, and download size in the browser, so a new release shows up without a redeploy.
   It owns devices, system actions, the event tap, and the SwiftUI interface.
 
 ## Rules for changes
@@ -61,6 +63,6 @@ Pull `main` after a release to get the changelog commit.
 To preview the next changelog locally, run `scripts/changelog.sh`.
 Commit subjects become changelog entries, so write them for readers: `feat:` lists under Features, `fix:` under Fixes, and a `!` after the type marks a breaking change.
 
-To let a bot or another maintainer release, set the repository variable `RELEASE_ACTORS` to a comma-separated list of GitHub logins with no spaces.
+To let a bot or another maintainer release or deploy the website, set the repository variable `RELEASE_ACTORS` to a comma-separated list of GitHub logins with no spaces.
 Include the owner in that list to keep the owner's access.
 A bot can then start the workflow through the API, for example with `gh workflow run release.yml -f bump=patch`.

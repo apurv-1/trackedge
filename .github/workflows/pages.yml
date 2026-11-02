@@ -1,15 +1,8 @@
 name: Website
 
 # Builds web/ and publishes it to GitHub Pages at https://apurv-1.github.io/trackedge/.
+# Runs only when started by hand from the Actions tab, or through the API by an allowed account.
 on:
-  push:
-    branches: [main]
-    paths:
-      - "web/**"
-      - ".github/workflows/pages.yml"
-  # A new release changes the version and size shown on the site.
-  release:
-    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -23,6 +16,11 @@ concurrency:
 
 jobs:
   build:
+    # Same rule as releases: only the repository owner, or the logins in the
+    # RELEASE_ACTORS repository variable, may publish, and only from main.
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      contains(format(',{0},', vars.RELEASE_ACTORS || github.repository_owner), format(',{0},', github.triggering_actor))
     runs-on: ubuntu-latest
     defaults:
       run:
