@@ -1,0 +1,31 @@
+name: Bug report
+description: Something on the trackpad edge did not behave as expected.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did on the trackpad, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: "macOS 15.2"
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: Mac and input device
+      placeholder: "MacBook Pro M3, built-in trackpad"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: TrackEdge version or commit
+    validations:
+      required: true
