@@ -10,6 +10,10 @@ TrackEdge is a free, open-source menu bar app for macOS 13 and later.
 See it in action at [apurv-1.github.io/trackedge](https://apurv-1.github.io/trackedge/).
 It was inspired by [EdgeBar](https://edgebar.xyz) and is not affiliated with it.
 
+[![A finger slides along the right edge of a trackpad and the volume rises](media/trackedge-film-poster.jpg)](media/trackedge-film.mp4)
+
+[Watch the 32-second film](media/trackedge-film.mp4), with sound on.
+
 ## Gestures
 
 | Where | Gesture | What happens |
