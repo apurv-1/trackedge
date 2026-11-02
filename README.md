@@ -45,7 +45,8 @@ The settings window holds the one-time choices:
 
 ## Install
 
-Download the latest `TrackEdge-<version>.zip` from [Releases](https://github.com/apurv-1/trackedge/releases), unzip it, and move `TrackEdge.app` to Applications.
+[Download TrackEdge](https://github.com/apurv-1/trackedge/releases/latest/download/TrackEdge.zip) for the latest version, unzip it, and move `TrackEdge.app` to Applications.
+That link always serves the newest release, and every version stays on the [Releases](https://github.com/apurv-1/trackedge/releases) page.
 The app is not notarized yet, so macOS blocks the first launch.
 Go to System Settings > Privacy & Security and click Open Anyway.
 
@@ -77,6 +78,11 @@ TrackEdge restarts touch input when a trackpad or Magic Mouse connects or discon
 - Brightness keys control the built-in display.
   External displays follow whatever macOS does for the brightness keys.
 - Tap to click still clicks when you tap an edge, because macOS handles clicks before TrackEdge sees them.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+The release workflow generates it from commit messages, so it is never edited by hand.
 
 ## Contributing
 

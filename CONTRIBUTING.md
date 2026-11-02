@@ -48,7 +48,15 @@ Only the repository owner can run the release, and only from `main`.
 1. Open Actions > Release > Run workflow.
 2. Pick `patch`, `minor`, or `major`.
    The workflow raises that part of the latest `vX.Y.Z` tag, so the first `major` release is `1.0.0`.
-3. The workflow runs the tests, builds a universal app, stamps the version, and publishes a GitHub release with the zip and its SHA-256 checksum.
+3. The workflow runs the tests, builds a universal app, and stamps the version.
+4. It regenerates `CHANGELOG.md` from the commit messages since the last release and commits it to `main`.
+   GitHub signs that commit, and the workflow stops if `main` moved during the run.
+5. It publishes a GitHub release on that commit with `TrackEdge.zip`, the versioned zip, its SHA-256 checksum, and that version's changelog as notes.
+   `releases/latest/download/TrackEdge.zip` then serves the new version.
+
+Pull `main` after a release to get the changelog commit.
+To preview the next changelog locally, run `scripts/changelog.sh`.
+Commit subjects become changelog entries, so write them for readers: `feat:` lists under Features, `fix:` under Fixes, and a `!` after the type marks a breaking change.
 
 To let a bot or another maintainer release, set the repository variable `RELEASE_ACTORS` to a comma-separated list of GitHub logins with no spaces.
 Include the owner in that list to keep the owner's access.
