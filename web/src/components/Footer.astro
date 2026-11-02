@@ -1,11 +1,11 @@
 ---
-import { repo } from "../lib/site";
+import { repo, sitePath } from "../lib/site";
 ---
 
 <footer class="footer">
   <div class="container footer-inner">
-    <a class="footer-brand" href="/">
-      <img src="/app-icon.png" alt="" width="24" height="24" loading="lazy" />
+    <a class="footer-brand" href={sitePath()}>
+      <img src={sitePath("app-icon.png")} alt="" width="24" height="24" loading="lazy" />
       TrackEdge
     </a>
     <nav class="footer-links" aria-label="Footer">

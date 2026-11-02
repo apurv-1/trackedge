@@ -1,3 +1,8 @@
+/** Prefixes a path with the base the site is served from, such as /trackedge on GitHub Pages. */
+export function sitePath(path = ""): string {
+  return `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+}
+
 export const repo = {
   owner: "apurv-1",
   name: "trackedge",

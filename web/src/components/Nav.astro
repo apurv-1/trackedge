@@ -1,7 +1,7 @@
 ---
 import Icon from "./Icon.astro";
 import { formatCount, type RepoStats } from "../lib/github";
-import { repo } from "../lib/site";
+import { repo, sitePath } from "../lib/site";
 
 interface Props {
   stats: RepoStats;
@@ -14,8 +14,8 @@ const stars = stats.stars ? formatCount(stats.stars) : "";
 
 <header class="nav">
   <div class="nav-inner">
-    <a class="nav-brand" href="/" aria-label="TrackEdge home">
-      <img src="/app-icon.png" alt="" width="28" height="28" />
+    <a class="nav-brand" href={sitePath()} aria-label="TrackEdge home">
+      <img src={sitePath("app-icon.png")} alt="" width="28" height="28" />
       <span>TrackEdge</span>
     </a>
     <nav class="nav-links" aria-label="Sections">

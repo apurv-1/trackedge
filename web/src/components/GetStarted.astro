@@ -1,7 +1,7 @@
 ---
 import Icon from "./Icon.astro";
 import { formatSize, type RepoStats } from "../lib/github";
-import { repo } from "../lib/site";
+import { repo, sitePath } from "../lib/site";
 
 interface Props {
   stats: RepoStats;
@@ -28,7 +28,7 @@ const steps = [
     <p class="eyebrow" data-reveal>Get started</p>
     <div class="panel glass" data-reveal>
       <div class="panel-main">
-        <img class="panel-icon" src="/app-icon.png" alt="TrackEdge app icon" width="112" height="112" loading="lazy" />
+        <img class="panel-icon" src={sitePath("app-icon.png")} alt="TrackEdge app icon" width="112" height="112" loading="lazy" />
         <h2 id="download-title" class="h2">All of TrackEdge, in one tiny app.</h2>
         <p class="lede">A menu bar app under 2 MB. No account, no subscription, no telemetry.</p>
         <div class="panel-actions">

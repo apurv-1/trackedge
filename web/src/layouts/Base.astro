@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import { product, repo } from "../lib/site";
+import { product, repo, sitePath } from "../lib/site";
 import type { RepoStats } from "../lib/github";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 
 const { title, description, stats } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const image = new URL("/og.jpg", Astro.site);
+const image = new URL(sitePath("og.jpg"), Astro.site);
 
 // Structured data lets search engines show TrackEdge as a free Mac app.
 const jsonLd = {
@@ -22,7 +22,7 @@ const jsonLd = {
   applicationCategory: "UtilitiesApplication",
   operatingSystem: `${product.minimumMacOS} or later`,
   url: canonical.href,
-  image: new URL("/app-icon.png", Astro.site).href,
+  image: new URL(sitePath("app-icon.png"), Astro.site).href,
   downloadUrl: repo.download,
   softwareVersion: stats.release?.version,
   license: "https://opensource.org/licenses/MIT",
@@ -45,9 +45,9 @@ const jsonLd = {
     <meta name="theme-color" content="#06070b" />
     <meta name="color-scheme" content="dark" />
 
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/png" href={sitePath("favicon.png")} />
+    <link rel="apple-touch-icon" href={sitePath("apple-touch-icon.png")} />
+    <link rel="sitemap" href={sitePath("sitemap-index.xml")} />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={product.name} />
