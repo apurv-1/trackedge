@@ -39,3 +39,17 @@ If gestures stop working, remove TrackEdge from System Settings > Privacy & Secu
 
 This project follows the [Contributor Covenant 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
 Report problems to the maintainer listed in `SECURITY.md`.
+
+## Releasing
+
+Releases are cut by hand, never on push.
+Only the repository owner can run the release, and only from `main`.
+
+1. Open Actions > Release > Run workflow.
+2. Pick `patch`, `minor`, or `major`.
+   The workflow raises that part of the latest `vX.Y.Z` tag, so the first `major` release is `1.0.0`.
+3. The workflow runs the tests, builds a universal app, stamps the version, and publishes a GitHub release with the zip and its SHA-256 checksum.
+
+To let a bot or another maintainer release, set the repository variable `RELEASE_ACTORS` to a comma-separated list of GitHub logins with no spaces.
+Include the owner in that list to keep the owner's access.
+A bot can then start the workflow through the API, for example with `gh workflow run release.yml -f bump=patch`.

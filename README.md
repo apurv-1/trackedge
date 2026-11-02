@@ -45,7 +45,11 @@ The settings window holds the one-time choices:
 
 ## Install
 
-Build from source with Xcode 15 or later:
+Download the latest `TrackEdge-<version>.zip` from [Releases](https://github.com/apurv-1/trackedge/releases), unzip it, and move `TrackEdge.app` to Applications.
+The app is not notarized yet, so macOS blocks the first launch.
+Go to System Settings > Privacy & Security and click Open Anyway.
+
+Or build from source with Xcode 15 or later:
 
 ```bash
 git clone https://github.com/apurv-1/trackedge.git

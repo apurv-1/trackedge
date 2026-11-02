@@ -1,0 +1,75 @@
+name: Release
+
+# Runs only when started by hand from the Actions tab, or through the API by an allowed account.
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Part of the version to raise
+        type: choice
+        options: [patch, minor, major]
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # Only the repository owner may release, from main. To allow a bot or another
+    # maintainer, set the repository variable RELEASE_ACTORS to a comma-separated
+    # list of GitHub logins, including the owner if the owner should keep access.
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      contains(format(',{0},', vars.RELEASE_ACTORS || github.repository_owner), format(',{0},', github.triggering_actor))
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Work out the version
+        id: version
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          version=$(scripts/next-version.sh "$BUMP")
+          if git rev-parse -q --verify "refs/tags/v$version" >/dev/null; then
+            echo "Tag v$version already exists." >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Releasing $version"
+
+      - name: Test
+        run: swift test
+
+      - name: Build universal app
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: make app SWIFT_FLAGS="--arch arm64 --arch x86_64" VERSION="$VERSION" BUILD_NUMBER="$BUILD_NUMBER"
+
+      - name: Package
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        working-directory: build
+        run: |
+          ditto -c -k --keepParent TrackEdge.app "TrackEdge-$VERSION.zip"
+          shasum -a 256 "TrackEdge-$VERSION.zip" > "TrackEdge-$VERSION.zip.sha256"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "v$VERSION" \
+            "build/TrackEdge-$VERSION.zip" \
+            "build/TrackEdge-$VERSION.zip.sha256" \
+            --target "$GITHUB_SHA" \
+            --title "TrackEdge $VERSION" \
+            --notes-file .github/release-notes.md \
+            --generate-notes
