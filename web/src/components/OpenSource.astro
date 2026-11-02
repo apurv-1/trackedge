@@ -1,0 +1,177 @@
+---
+import Icon from "./Icon.astro";
+import { formatCount, type RepoStats } from "../lib/github";
+import { repo } from "../lib/site";
+
+interface Props {
+  stats: RepoStats;
+}
+
+const { stats } = Astro.props;
+const command = `git clone ${repo.url}.git && cd trackedge && make run`;
+
+const numbers = [
+  { key: "stars", label: "GitHub stars", value: formatCount(stats.stars) },
+  { key: "forks", label: "Forks", value: formatCount(stats.forks) },
+  { key: "version", label: "Latest release", value: stats.release ? `v${stats.release.version}` : "" },
+  { key: null, label: "License", value: "MIT" },
+];
+---
+
+<section id="open-source" class="section" aria-labelledby="oss-title">
+  <div class="container oss">
+    <div>
+      <p class="eyebrow" data-reveal>Open source</p>
+      <h2 id="oss-title" class="h2" data-reveal>MIT on GitHub. Read it, fork it, make it yours.</h2>
+      <p class="lede" data-reveal>
+        Written in Swift with no third-party dependencies. The gesture engine is pure logic with a unit test for every
+        rule.
+      </p>
+
+      <div class="code" data-reveal>
+        <code>{command}</code>
+        <button class="code-copy" type="button" data-copy={command} aria-label="Copy the build command">
+          <span class="code-copy-idle"><Icon name="copy" size={16} /></span>
+          <span class="code-copy-done"><Icon name="check" size={16} /></span>
+        </button>
+      </div>
+
+      <div class="oss-actions" data-reveal>
+        <a class="btn btn-primary" href={repo.url} rel="noopener">
+          <Icon name="star" size={16} />
+          Star on GitHub
+        </a>
+        <a class="btn btn-ghost" href={repo.readme} rel="noopener">
+          <Icon name="book" size={16} />
+          Read the docs
+        </a>
+      </div>
+    </div>
+
+    <dl class="numbers" data-reveal>
+      {
+        numbers.map((number) => (
+          <div class="number">
+            <dt>{number.label}</dt>
+            <dd>
+              {number.key ? (
+                <span data-gh={number.key}>{number.value || "New"}</span>
+              ) : (
+                number.value
+              )}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .oss {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 96px);
+    align-items: end;
+  }
+
+  .code {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 620px;
+    margin-top: 36px;
+    padding: 6px 6px 6px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: rgb(0 0 0 / 0.35);
+  }
+
+  .code code {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    scrollbar-width: none;
+  }
+
+  .code-copy {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: rgb(255 255 255 / 0.04);
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease-out);
+  }
+
+  .code-copy:hover {
+    border-color: var(--line-strong);
+  }
+
+  .code-copy-done,
+  .code-copy[data-state="copied"] .code-copy-idle {
+    display: none;
+  }
+
+  .code-copy[data-state="copied"] .code-copy-done {
+    display: block;
+    color: var(--cyan);
+  }
+
+  .oss-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .numbers {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .number {
+    padding: 28px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .number:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .number:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+
+  dt {
+    color: var(--ink-3);
+    font-size: var(--text-sm);
+  }
+
+  dd {
+    margin: 10px 0 0;
+    font-size: clamp(32px, 3.6vw, 48px);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  @media (max-width: 900px) {
+    .oss {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

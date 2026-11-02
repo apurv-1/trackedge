@@ -1,0 +1,156 @@
+---
+import Icon from "./Icon.astro";
+import { formatCount, type RepoStats } from "../lib/github";
+import { repo } from "../lib/site";
+
+interface Props {
+  stats: RepoStats;
+}
+
+const { stats } = Astro.props;
+// A count badge only appears once there is at least one star.
+const stars = stats.stars ? formatCount(stats.stars) : "";
+---
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="/" aria-label="TrackEdge home">
+      <img src="/app-icon.png" alt="" width="28" height="28" />
+      <span>TrackEdge</span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#gestures">Gestures</a>
+      <a href="#features">Features</a>
+      <a href="#download">Download</a>
+      <a href="#open-source">Open source</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="nav-star" href={repo.url} rel="noopener" aria-label="Star TrackEdge on GitHub">
+        <Icon name="github" size={16} />
+        <span class="nav-star-label">Star</span>
+        <span class="nav-star-count" data-gh="star-badge" hidden={!stars}>{stars}</span>
+      </a>
+      <a class="nav-download" href="#download">Download</a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    border-bottom: 1px solid transparent;
+    background: linear-gradient(180deg, rgb(6 7 11 / 0.82), rgb(6 7 11 / 0.55));
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border-bottom-color: var(--line);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 64px;
+    max-width: calc(var(--max) + 2 * var(--gutter));
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  .nav-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 620;
+    letter-spacing: -0.03em;
+  }
+
+  .nav-brand img {
+    border-radius: 7px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    margin: 0 auto;
+  }
+
+  .nav-links a {
+    padding: 8px 12px;
+    border-radius: var(--radius-pill);
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    transition:
+      color 0.2s var(--ease-out),
+      background-color 0.2s var(--ease-out);
+  }
+
+  .nav-links a:hover {
+    color: var(--ink);
+    background: rgb(255 255 255 / 0.05);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-star,
+  .nav-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: var(--radius-pill);
+    font-size: var(--text-sm);
+    font-weight: 540;
+    transition:
+      background-color 0.2s var(--ease-out),
+      border-color 0.2s var(--ease-out);
+  }
+
+  .nav-star {
+    border: 1px solid var(--line-strong);
+    background: rgb(255 255 255 / 0.03);
+  }
+
+  .nav-star:hover {
+    border-color: rgb(255 255 255 / 0.3);
+  }
+
+  .nav-star-count {
+    padding-left: 8px;
+    border-left: 1px solid var(--line-strong);
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .nav-download {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .nav-download:hover {
+    background: #fff;
+  }
+
+  @media (max-width: 860px) {
+    .nav-links {
+      display: none;
+    }
+
+    .nav-actions {
+      margin-left: auto;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .nav-star-label {
+      display: none;
+    }
+  }
+</style>

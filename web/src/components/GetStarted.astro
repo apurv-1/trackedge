@@ -1,0 +1,161 @@
+---
+import Icon from "./Icon.astro";
+import { formatSize, type RepoStats } from "../lib/github";
+import { repo } from "../lib/site";
+
+interface Props {
+  stats: RepoStats;
+}
+
+const { stats } = Astro.props;
+const release = stats.release;
+
+const steps = [
+  { title: "Download and unzip", body: "Move TrackEdge.app into your Applications folder." },
+  {
+    title: "Open it once",
+    body: "TrackEdge is not notarized yet, so macOS asks first. Go to System Settings, then Privacy & Security, and click Open Anyway.",
+  },
+  {
+    title: "Allow Accessibility",
+    body: "TrackEdge needs it to send media keys and freeze the cursor. Then slide an edge.",
+  },
+];
+---
+
+<section id="download" class="section" aria-labelledby="download-title">
+  <div class="container">
+    <p class="eyebrow" data-reveal>Get started</p>
+    <div class="panel glass" data-reveal>
+      <div class="panel-main">
+        <img class="panel-icon" src="/app-icon.png" alt="TrackEdge app icon" width="112" height="112" loading="lazy" />
+        <h2 id="download-title" class="h2">All of TrackEdge, in one tiny app.</h2>
+        <p class="lede">A menu bar app under 2 MB. No account, no subscription, no telemetry.</p>
+        <div class="panel-actions">
+          <a class="btn btn-primary" href={repo.download}>
+            <Icon name="download" />
+            Download for macOS
+          </a>
+          <a class="btn btn-ghost" href={repo.releases} rel="noopener">
+            All releases
+            <Icon name="arrowUpRight" size={16} />
+          </a>
+        </div>
+        <p class="panel-meta">
+          <span data-gh="version" hidden={!release}>{release ? `v${release.version}` : ""}</span>
+          <span data-gh="size" hidden={!release?.sizeBytes}>{formatSize(release?.sizeBytes ?? null)}</span>
+          <span>macOS 13 or later</span>
+          <span>Apple silicon and Intel</span>
+        </p>
+      </div>
+
+      <ol class="steps">
+        {
+          steps.map((step, index) => (
+            <li>
+              <span class="step-number">{index + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 72px);
+    padding: clamp(28px, 5vw, 64px);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .panel::before {
+    content: "";
+    position: absolute;
+    inset: -40% auto auto -20%;
+    width: 70%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle, rgb(100 210 255 / 0.16), transparent 65%);
+    pointer-events: none;
+  }
+
+  .panel-main {
+    position: relative;
+  }
+
+  .panel-icon {
+    margin-bottom: 28px;
+    filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.6)) drop-shadow(0 0 40px rgb(100 210 255 / 0.25));
+  }
+
+  .panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .panel-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin: 20px 0 0;
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .steps {
+    display: grid;
+    align-content: center;
+    gap: 28px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: relative;
+  }
+
+  .steps li {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .step-number {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  .steps h3 {
+    margin: 6px 0 0;
+    font-size: 17px;
+    font-weight: 560;
+    letter-spacing: -0.02em;
+  }
+
+  .steps p {
+    margin: 6px 0 0;
+    color: var(--ink-2);
+    font-size: 15px;
+  }
+
+  @media (max-width: 900px) {
+    .panel {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

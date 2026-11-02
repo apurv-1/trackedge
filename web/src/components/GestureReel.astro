@@ -1,0 +1,625 @@
+---
+import Icon from "./Icon.astro";
+import type { IconName } from "../lib/icons";
+
+type Gesture = { id: string; title: string; caption: string; edge?: "left" | "right"; badge?: IconName; keys?: string[] };
+
+const rows: Gesture[][] = [
+  [
+    { id: "volume", title: "Volume", caption: "Slide the right edge up or down.", edge: "right" },
+    { id: "brightness", title: "Brightness", caption: "Slide the left edge up or down.", edge: "left" },
+    { id: "mute", title: "Quick mute", caption: "Double-tap the top-right corner.", badge: "speakerMute" },
+    { id: "next", title: "Next track", caption: "Swipe along the bottom edge.", badge: "forward" },
+  ],
+  [
+    { id: "play", title: "Play or pause", caption: "Double-tap the bottom edge.", badge: "playPause" },
+    { id: "fine", title: "Fine control", caption: "Hold Shift-Option for quarter steps.", edge: "right", keys: ["⇧", "⌥"] },
+    { id: "freeze", title: "Cursor freeze", caption: "The pointer stays put while you slide.", edge: "right", badge: "cursor" },
+    { id: "mouse", title: "Magic Mouse", caption: "Works on the mouse's top edges too.", edge: "right" },
+  ],
+];
+---
+
+<section id="gestures" class="section reel-section" aria-labelledby="gestures-title">
+  <div class="container">
+    <p class="eyebrow" data-reveal>Gestures</p>
+    <h2 id="gestures-title" class="h2" data-reveal>One finger. No new shortcuts to learn.</h2>
+    <p class="lede" data-reveal>
+      Every gesture uses a single finger on an edge, so scrolling, clicking, and multi-finger gestures keep working exactly
+      as before.
+    </p>
+  </div>
+
+  <div class="reel" data-reveal>
+    {
+      rows.map((row, rowIndex) => (
+        <div class:list={["reel-row", rowIndex === 1 && "is-reverse"]}>
+          {[0, 1].map((copy) => (
+            <ul class="reel-track" aria-hidden={copy === 1 ? "true" : undefined}>
+              {row.map((gesture) => (
+                <li class="reel-card glass">
+                  <div class="mini" data-g={gesture.id} data-edge={gesture.edge} aria-hidden="true">
+                    <div class="mini-pad">
+                      <i class="mini-track is-left">
+                        <i class="mini-fill" />
+                      </i>
+                      <i class="mini-track is-right">
+                        <i class="mini-fill" />
+                      </i>
+                      <i class="mini-strip" />
+                      {gesture.badge && (
+                        <span class="mini-badge">
+                          <Icon name={gesture.badge} size={18} />
+                        </span>
+                      )}
+                      {gesture.keys && (
+                        <span class="mini-keys">
+                          {gesture.keys.map((key) => (
+                            <kbd>{key}</kbd>
+                          ))}
+                        </span>
+                      )}
+                      <i class="mini-dot" />
+                    </div>
+                  </div>
+                  <div class="reel-label">
+                    <h3>{gesture.title}</h3>
+                    <p>{gesture.caption}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .reel {
+    display: grid;
+    gap: 16px;
+    margin-top: clamp(48px, 7vw, 80px);
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8% 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8% 92%, transparent);
+  }
+
+  .reel-row {
+    display: flex;
+    width: max-content;
+    animation: reel-scroll 52s linear infinite;
+  }
+
+  .reel-row.is-reverse {
+    animation-direction: reverse;
+    animation-duration: 60s;
+  }
+
+  .reel:hover .reel-row {
+    animation-play-state: paused;
+  }
+
+  @keyframes reel-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .reel-track {
+    display: flex;
+    gap: 16px;
+    margin: 0;
+    padding: 0 16px 0 0;
+    list-style: none;
+  }
+
+  .reel-card {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    height: 286px;
+    padding: 14px;
+    transition:
+      transform 0.35s var(--ease-out),
+      border-color 0.35s var(--ease-out);
+  }
+
+  .reel-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--line-strong);
+  }
+
+  .reel-label {
+    padding: 14px 6px 4px;
+  }
+
+  .reel-label h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 560;
+    letter-spacing: -0.02em;
+  }
+
+  .reel-label p {
+    margin: 4px 0 0;
+    color: var(--ink-3);
+    font-size: var(--text-sm);
+  }
+
+  /* Mini trackpad shared by every card. Each gesture animates it differently. */
+  .mini {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: radial-gradient(120% 90% at 50% 0%, rgb(100 210 255 / 0.08), transparent 70%), rgb(0 0 0 / 0.25);
+    border: 1px solid rgb(255 255 255 / 0.05);
+  }
+
+  .mini-pad {
+    position: relative;
+    width: 72%;
+    aspect-ratio: 1.6;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #2a2f3e, #151821);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      inset 0 0 0 1px rgb(255 255 255 / 0.06),
+      0 18px 30px -16px rgb(0 0 0 / 0.8);
+  }
+
+  /*
+   * Track geometry lives in variables, so the track, its fill, and the finger
+   * all read the same numbers and cannot drift apart. One animated --level
+   * drives both the fill height and the finger's height on the track.
+   */
+  @property --level {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0.45;
+  }
+
+  @property --dot-o {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+  }
+
+  .mini-pad {
+    --inset: 7%;
+    --track-w: 5px;
+    --t-top: 16%;
+    --t-bottom: 16%;
+  }
+
+  .mini-track {
+    position: absolute;
+    top: var(--t-top);
+    bottom: var(--t-bottom);
+    width: var(--track-w);
+    border-radius: 99px;
+    background: rgb(255 255 255 / 0.08);
+    overflow: hidden;
+  }
+
+  .mini-track.is-left {
+    left: var(--inset);
+  }
+
+  .mini-track.is-right {
+    right: var(--inset);
+  }
+
+  .mini-fill {
+    position: absolute;
+    inset: auto 0 0;
+    height: 45%;
+    border-radius: 99px;
+  }
+
+  .is-left .mini-fill {
+    background: var(--brightness);
+    box-shadow: 0 0 10px rgb(255 179 64 / 0.7);
+    height: 65%;
+  }
+
+  .is-right .mini-fill {
+    background: var(--volume);
+    box-shadow: 0 0 10px rgb(100 210 255 / 0.8);
+  }
+
+  [data-edge="left"] .is-left .mini-fill,
+  [data-edge="right"] .is-right .mini-fill {
+    height: calc(var(--level) * 100%);
+  }
+
+  .mini-strip {
+    position: absolute;
+    left: 22%;
+    right: 22%;
+    bottom: 9%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.22), transparent);
+  }
+
+  .mini-dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    margin: -11px 0 0 -11px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 32%, #fff, #cfd7e7);
+    box-shadow:
+      0 6px 14px -4px rgb(0 0 0 / 0.6),
+      0 0 18px rgb(100 210 255 / 0.65);
+    opacity: 0;
+  }
+
+  /* On an edge, the finger is centered on the track and rests on top of the fill. */
+  [data-edge] .mini-dot {
+    top: calc(var(--t-top) + (1 - var(--level)) * (100% - var(--t-top) - var(--t-bottom)));
+    opacity: var(--dot-o);
+  }
+
+  [data-edge="right"] .mini-dot {
+    left: calc(100% - var(--inset) - var(--track-w) / 2);
+  }
+
+  [data-edge="left"] .mini-dot {
+    left: calc(var(--inset) + var(--track-w) / 2);
+  }
+
+  .mini-badge,
+  .mini-keys {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 4px;
+    color: var(--cyan);
+    opacity: 0;
+  }
+
+  .mini-badge {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgb(100 210 255 / 0.12);
+    box-shadow: 0 0 0 1px rgb(100 210 255 / 0.3);
+  }
+
+  .mini-keys kbd {
+    display: grid;
+    place-items: center;
+    min-width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    border: 1px solid rgb(255 255 255 / 0.18);
+    background: rgb(255 255 255 / 0.06);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    box-shadow: 0 2px 0 rgb(0 0 0 / 0.5);
+  }
+
+  /* Volume and cursor freeze: the finger climbs the right edge with the level. */
+  [data-g="volume"] .mini-pad,
+  [data-g="freeze"] .mini-pad,
+  [data-g="mouse"] .mini-pad {
+    animation:
+      level-up 4.2s var(--ease-in-out) infinite,
+      dot-slide 4.2s var(--ease-in-out) infinite;
+  }
+
+  /* Brightness: the finger moves down the left edge. */
+  [data-g="brightness"] .mini-pad {
+    animation:
+      level-down 4.2s var(--ease-in-out) infinite,
+      dot-slide 4.2s var(--ease-in-out) infinite;
+  }
+
+  /* Fine control: the level moves in small, even steps while the keys are held. */
+  [data-g="fine"] .mini-pad {
+    --dot-o: 1;
+    animation: level-steps 4.8s steps(10, end) infinite;
+  }
+
+  [data-g="fine"] .mini-keys {
+    opacity: 1;
+    animation: keys-glow 4.8s var(--ease-in-out) infinite;
+  }
+
+  /* Quick mute: two taps in the corner, then the level drops to zero. */
+  [data-g="mute"] .mini-dot {
+    animation: tap-corner 4s var(--ease-out) infinite;
+  }
+  [data-g="mute"] .is-right .mini-fill {
+    animation: mute-level 4s var(--ease-out) infinite;
+  }
+  [data-g="mute"] .mini-badge,
+  [data-g="next"] .mini-badge,
+  [data-g="play"] .mini-badge {
+    animation: badge-flash 4s var(--ease-out) infinite;
+  }
+
+  /* Media strip: a swipe along the bottom skips forward; two taps play or pause. */
+  [data-g="next"] .mini-dot {
+    animation: swipe-bottom 4s var(--ease-in-out) infinite;
+  }
+
+  [data-g="play"] .mini-dot {
+    animation: tap-bottom 4s var(--ease-out) infinite;
+  }
+
+  /* Cursor freeze: the pointer holds still in the middle while the finger slides. */
+  [data-g="freeze"] .mini-badge {
+    opacity: 1;
+    color: var(--ink);
+    background: transparent;
+    box-shadow: none;
+    animation: freeze-ring 4.2s var(--ease-in-out) infinite;
+  }
+
+  /* Magic Mouse: a narrower, taller surface; only the top part of each edge responds. */
+  [data-g="mouse"] .mini-pad {
+    --inset: 12%;
+    --track-w: 4px;
+    --t-top: 14%;
+    --t-bottom: 48%;
+    width: 30%;
+    aspect-ratio: 0.58;
+    border-radius: 48% 48% 42% 42% / 30% 30% 22% 22%;
+  }
+
+  [data-g="mouse"] .mini-strip {
+    display: none;
+  }
+
+  @keyframes level-up {
+    0%,
+    16% {
+      --level: 0.22;
+    }
+    62%,
+    86% {
+      --level: 0.82;
+    }
+    100% {
+      --level: 0.22;
+    }
+  }
+
+  @keyframes level-down {
+    0%,
+    16% {
+      --level: 0.82;
+    }
+    62%,
+    86% {
+      --level: 0.34;
+    }
+    100% {
+      --level: 0.82;
+    }
+  }
+
+  @keyframes level-steps {
+    0% {
+      --level: 0.26;
+    }
+    100% {
+      --level: 0.74;
+    }
+  }
+
+  /* The finger appears on the track, rides the level, then lifts away before the level resets. */
+  @keyframes dot-slide {
+    0%,
+    8% {
+      --dot-o: 0;
+    }
+    16%,
+    62% {
+      --dot-o: 1;
+    }
+    74%,
+    100% {
+      --dot-o: 0;
+    }
+  }
+
+  @keyframes tap-corner {
+    0%,
+    10% {
+      left: 84%;
+      top: 18%;
+      opacity: 0;
+      transform: scale(1);
+    }
+    18% {
+      left: 84%;
+      top: 18%;
+      opacity: 1;
+      transform: scale(1);
+    }
+    22% {
+      transform: scale(0.75);
+    }
+    26% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(0.75);
+    }
+    34% {
+      left: 84%;
+      top: 18%;
+      opacity: 1;
+      transform: scale(1);
+    }
+    44%,
+    100% {
+      left: 84%;
+      top: 18%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes mute-level {
+    0%,
+    32% {
+      height: 55%;
+    }
+    40%,
+    84% {
+      height: 0%;
+    }
+    96%,
+    100% {
+      height: 55%;
+    }
+  }
+
+  @keyframes badge-flash {
+    0%,
+    32% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.7);
+    }
+    40%,
+    76% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    88%,
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.15);
+    }
+  }
+
+  /* Bottom gestures run along the strip line, which sits 9% above the bottom edge. */
+  @keyframes swipe-bottom {
+    0%,
+    10% {
+      left: 28%;
+      top: 91%;
+      opacity: 0;
+    }
+    18% {
+      left: 28%;
+      top: 91%;
+      opacity: 1;
+    }
+    34% {
+      left: 72%;
+      top: 91%;
+      opacity: 1;
+    }
+    44%,
+    100% {
+      left: 72%;
+      top: 91%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes tap-bottom {
+    0%,
+    10% {
+      left: 50%;
+      top: 91%;
+      opacity: 0;
+      transform: scale(1);
+    }
+    18% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    22% {
+      transform: scale(0.75);
+    }
+    26% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(0.75);
+    }
+    34% {
+      left: 50%;
+      top: 91%;
+      opacity: 1;
+      transform: scale(1);
+    }
+    44%,
+    100% {
+      left: 50%;
+      top: 91%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes keys-glow {
+    0%,
+    100% {
+      filter: none;
+    }
+    50% {
+      filter: drop-shadow(0 0 8px rgb(100 210 255 / 0.6));
+    }
+  }
+
+  @keyframes freeze-ring {
+    0%,
+    14%,
+    74%,
+    100% {
+      filter: none;
+      opacity: 0.55;
+    }
+    20%,
+    62% {
+      filter: drop-shadow(0 0 6px rgb(100 210 255 / 0.9));
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reel {
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+
+    .reel-row {
+      width: auto;
+      animation: none;
+      justify-content: center;
+      padding: 0 var(--gutter);
+    }
+
+    .reel-track {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .reel-track[aria-hidden="true"] {
+      display: none;
+    }
+
+    .mini-dot,
+    .mini-pad {
+      --dot-o: 1;
+    }
+
+    .mini-dot {
+      opacity: 1;
+    }
+  }
+</style>

@@ -1,0 +1,26 @@
+---
+import Base from "../layouts/Base.astro";
+import Features from "../components/Features.astro";
+import Footer from "../components/Footer.astro";
+import GestureReel from "../components/GestureReel.astro";
+import GetStarted from "../components/GetStarted.astro";
+import Hero from "../components/Hero.astro";
+import Nav from "../components/Nav.astro";
+import OpenSource from "../components/OpenSource.astro";
+import { getRepoStats } from "../lib/github";
+import { product } from "../lib/site";
+
+const stats = await getRepoStats();
+---
+
+<Base title={`${product.name}: ${product.tagline}`} description={product.description} stats={stats}>
+  <Nav stats={stats} />
+  <main id="main">
+    <Hero stats={stats} />
+    <GestureReel />
+    <Features />
+    <GetStarted stats={stats} />
+    <OpenSource stats={stats} />
+  </main>
+  <Footer />
+</Base>

@@ -1,0 +1,250 @@
+---
+import Icon from "./Icon.astro";
+import TrackpadDemo from "./TrackpadDemo.tsx";
+import { formatCount, formatSize, type RepoStats } from "../lib/github";
+import { repo } from "../lib/site";
+
+interface Props {
+  stats: RepoStats;
+}
+
+const { stats } = Astro.props;
+// A count badge only appears once there is at least one star.
+const stars = stats.stars ? formatCount(stats.stars) : "";
+const release = stats.release;
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <canvas class="hero-aurora" data-aurora aria-hidden="true"></canvas>
+  <div class="hero-grid" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <p class="hero-lockup rise" aria-hidden="true">Track<span>Edge</span></p>
+
+    <div class="hero-stage rise" style="--reveal-delay: 120ms">
+      <TrackpadDemo client:visible />
+      <p class="hero-hint"><span class="hero-hint-dot"></span>Live demo. Drag along an edge.</p>
+    </div>
+
+    <div class="hero-copy rise" style="--reveal-delay: 200ms">
+      <h1 id="hero-title">
+        <span>The edges of your trackpad,</span>
+        <span>now volume and brightness.</span>
+      </h1>
+      <p class="hero-sub">
+        Slide the right edge for volume and the left edge for brightness. Double-tap a corner to mute. Swipe the bottom to
+        skip tracks.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href={repo.download}>
+          <Icon name="download" />
+          Download for macOS
+        </a>
+        <a class="btn btn-ghost" href={repo.url} rel="noopener">
+          <Icon name="star" size={16} class="hero-star" />
+          Star on GitHub
+          <span class="btn-count" data-gh="star-badge" hidden={!stars}>{stars}</span>
+        </a>
+      </div>
+      <p class="hero-note">
+        <span data-gh="version" hidden={!release}>{release ? `v${release.version}` : ""}</span>
+        <span data-gh="size" hidden={!release?.sizeBytes}>{formatSize(release?.sizeBytes ?? null)}</span>
+        <span>Free and open source</span>
+        <span>macOS 13 or later, Apple silicon and Intel</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero-aurora {
+    position: absolute;
+    inset: -10% -5%;
+    width: 110%;
+    height: 120%;
+    z-index: -2;
+    transform: rotate(-6deg);
+    filter: blur(32px) saturate(130%);
+    opacity: 0.95;
+  }
+
+  /* A faint grid that fades out toward the edges. */
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(80% 70% at 60% 45%, #000 20%, transparent 75%);
+    -webkit-mask-image: radial-gradient(80% 70% at 60% 45%, #000 20%, transparent 75%);
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 30%;
+    z-index: -1;
+    background: linear-gradient(180deg, transparent, var(--bg));
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    column-gap: clamp(32px, 5vw, 80px);
+    min-height: max(100svh, 760px);
+    max-width: calc(var(--max) + 2 * var(--gutter));
+    margin: 0 auto;
+    padding: 112px var(--gutter) clamp(40px, 7vh, 72px);
+  }
+
+  .hero-lockup {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    font-size: var(--text-display);
+    font-weight: 660;
+    line-height: 0.88;
+    letter-spacing: -0.065em;
+    background: linear-gradient(180deg, #fff 30%, rgb(255 255 255 / 0.5));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero-lockup span {
+    background: linear-gradient(100deg, var(--cyan), var(--indigo) 70%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .hero-stage {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    align-self: center;
+    justify-self: end;
+    width: 100%;
+    max-width: 640px;
+  }
+
+  .hero-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 28px 0 0;
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+  }
+
+  .hero-hint-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+    animation: hero-pulse 2.4s var(--ease-in-out) infinite;
+  }
+
+  @keyframes hero-pulse {
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  .hero-copy {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: end;
+  }
+
+  h1 {
+    margin: 0;
+    text-wrap: balance;
+    font-size: var(--text-h1);
+    font-weight: 430;
+    line-height: 1.04;
+    letter-spacing: -0.045em;
+  }
+
+  h1 span {
+    display: block;
+  }
+
+  h1 span + span {
+    color: var(--ink-2);
+  }
+
+  .hero-sub {
+    max-width: 46ch;
+    margin: 22px 0 0;
+    color: var(--ink-2);
+    font-size: var(--text-lg);
+    line-height: 1.5;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .hero-star {
+    color: #ffd25a;
+  }
+
+  .hero-note {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 0;
+    margin: 16px 0 0;
+    color: var(--ink-3);
+    font-size: var(--text-sm);
+  }
+
+  .hero-note span:not([hidden]) ~ span::before {
+    content: "·";
+    margin: 0 8px;
+    color: var(--ink-3);
+  }
+
+  .hero-note [data-gh="version"] {
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  @media (max-width: 980px) {
+    .hero-inner {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto;
+      row-gap: 40px;
+      min-height: auto;
+      padding-top: 104px;
+    }
+
+    .hero-lockup,
+    .hero-stage,
+    .hero-copy {
+      grid-column: 1;
+      grid-row: auto;
+    }
+
+    .hero-stage {
+      justify-self: center;
+    }
+  }
+</style>

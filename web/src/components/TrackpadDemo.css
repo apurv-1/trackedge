@@ -1,0 +1,294 @@
+.td {
+  position: relative;
+  width: 100%;
+  padding-top: 64px;
+}
+
+/* The trackpad: dark glass with a lit top edge and a soft cyan halo. */
+.td-pad {
+  position: relative;
+  aspect-ratio: 1.6;
+  border-radius: clamp(20px, 4.6vw, 36px);
+  background: linear-gradient(180deg, #2b3040 0%, #181b25 55%, #12141c 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.28),
+    inset 0 0 0 1px rgb(255 255 255 / 0.07),
+    inset 0 -30px 60px -30px rgb(0 0 0 / 0.6),
+    0 60px 120px -40px rgb(0 0 0 / 0.9),
+    0 0 160px -50px rgb(100 210 255 / 0.4);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: hidden;
+  animation: td-float 9s var(--ease-in-out) infinite;
+}
+
+.td-pad:active {
+  cursor: grabbing;
+}
+
+.td-pad:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 6px;
+  border-radius: clamp(20px, 4.6vw, 36px);
+}
+
+@keyframes td-float {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.td-sheen {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 70% at 30% 0%, rgb(255 255 255 / 0.09), transparent 60%);
+  pointer-events: none;
+}
+
+/* Edge zones with their live level. */
+.td-zone {
+  position: absolute;
+  top: 9%;
+  bottom: 9%;
+  width: 13%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 4% 0;
+  pointer-events: none;
+}
+
+.td-zone-left {
+  left: 0;
+}
+
+.td-zone-right {
+  right: 0;
+}
+
+.td-zone-icon {
+  order: -1;
+  color: var(--ink-3);
+}
+
+.td-track {
+  position: relative;
+  flex: 1;
+  width: clamp(8px, 1.5vw, 12px);
+  border-radius: var(--radius-pill);
+  background: rgb(255 255 255 / 0.07);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.4);
+}
+
+.td-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--radius-pill);
+  transition: height 0.12s var(--ease-out);
+}
+
+.td-fill.is-volume {
+  background: var(--volume);
+  box-shadow: 0 0 18px rgb(100 210 255 / 0.75), 0 0 2px rgb(255 255 255 / 0.6) inset;
+}
+
+.td-fill.is-brightness {
+  background: var(--brightness);
+  box-shadow: 0 0 18px rgb(255 179 64 / 0.65), 0 0 2px rgb(255 255 255 / 0.6) inset;
+}
+
+.td-corner {
+  position: absolute;
+  top: 7%;
+  right: 15%;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--ink-3);
+  opacity: 0.55;
+  pointer-events: none;
+  transition:
+    color 0.25s var(--ease-out),
+    opacity 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out);
+}
+
+.td-corner.is-muted {
+  color: var(--cyan);
+  opacity: 1;
+  box-shadow: 0 0 0 1px rgb(100 210 255 / 0.4), 0 0 20px rgb(100 210 255 / 0.35);
+}
+
+.td-strip {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 6.5%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.td-strip span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.18), transparent);
+}
+
+/* The finger: a frosted disc with a cyan glow. */
+.td-finger {
+  position: absolute;
+  width: clamp(38px, 8.4%, 58px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 32%, #ffffff, #d7deec 70%, #c3cbdc);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.5) inset,
+    0 10px 24px -6px rgb(0 0 0 / 0.55),
+    0 0 34px rgb(100 210 255 / 0.55);
+  transform: translate(-50%, -50%) scale(0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.22s var(--ease-out),
+    transform 0.22s var(--ease-out);
+}
+
+.td-finger.is-visible {
+  opacity: 0.96;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.td-finger.is-pressed {
+  transform: translate(-50%, -50%) scale(0.9);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.5) inset,
+    0 6px 16px -6px rgb(0 0 0 / 0.55),
+    0 0 46px rgb(100 210 255 / 0.8);
+}
+
+.td-tick {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid rgb(100 210 255 / 0.85);
+  animation: td-tick 0.36s var(--ease-out) forwards;
+}
+
+@keyframes td-tick {
+  from {
+    opacity: 1;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+.td-ripple {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgb(100 210 255 / 0.9);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: td-ripple 0.6s var(--ease-out) forwards;
+}
+
+@keyframes td-ripple {
+  to {
+    width: 90px;
+    height: 90px;
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+/* The on-screen display, modeled on the macOS volume and brightness HUD. */
+.td-hud {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 44px;
+  padding: 0 18px 0 14px;
+  border-radius: var(--radius-pill);
+  background: rgb(28 31 42 / 0.72);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    0 18px 40px -12px rgb(0 0 0 / 0.7);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  color: var(--ink);
+  opacity: 0;
+  transform: translate(-50%, 8px) scale(0.96);
+  transition:
+    opacity 0.28s var(--ease-out),
+    transform 0.4s var(--ease-out);
+  pointer-events: none;
+}
+
+.td-hud.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.td-hud-icon {
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+}
+
+.td-hud-label {
+  font-size: var(--text-sm);
+  font-weight: 520;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.td-chiclets {
+  display: flex;
+  gap: 3px;
+}
+
+.td-chiclets i {
+  width: 7px;
+  height: 14px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.14);
+  transition: background-color 0.1s linear;
+}
+
+.td-chiclets i.is-on.is-volume {
+  background: var(--cyan);
+  box-shadow: 0 0 8px rgb(100 210 255 / 0.6);
+}
+
+.td-chiclets i.is-on.is-brightness {
+  background: var(--amber);
+  box-shadow: 0 0 8px rgb(255 179 64 / 0.55);
+}
+
+@media (max-width: 520px) {
+  .td-chiclets i {
+    width: 5px;
+  }
+
+  .td-strip {
+    gap: 6px;
+  }
+}
