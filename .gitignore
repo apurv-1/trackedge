@@ -6,3 +6,6 @@
 xcuserdata/
 DerivedData/
 Package.resolved
+
+# The product film lives only on the maintainer's machine.
+/video/
