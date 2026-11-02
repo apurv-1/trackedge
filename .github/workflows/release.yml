@@ -60,16 +60,53 @@ jobs:
         run: |
           ditto -c -k --keepParent TrackEdge.app "TrackEdge-$VERSION.zip"
           shasum -a 256 "TrackEdge-$VERSION.zip" > "TrackEdge-$VERSION.zip.sha256"
+          # A copy with a fixed name gives a permanent link:
+          # https://github.com/<owner>/<repo>/releases/latest/download/TrackEdge.zip
+          cp "TrackEdge-$VERSION.zip" TrackEdge.zip
+
+      - name: Update changelog
+        id: changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          # Never tag code this run did not build and test.
+          main=$(gh api "repos/$REPO/git/ref/heads/main" --jq .object.sha)
+          if [ "$main" != "$GITHUB_SHA" ]; then
+            echo "main moved to $main while this run built $GITHUB_SHA. Start the release again." >&2
+            exit 1
+          fi
+
+          scripts/changelog.sh "$VERSION" > CHANGELOG.md
+
+          # Commit through the API so GitHub signs and verifies the commit.
+          sha=$(gh api "repos/$REPO/contents/CHANGELOG.md?ref=main" --jq .sha 2>/dev/null || true)
+          commit=$(gh api -X PUT "repos/$REPO/contents/CHANGELOG.md" \
+            -f message="docs: update changelog for v$VERSION" \
+            -f content="$(base64 < CHANGELOG.md | tr -d '\n')" \
+            -f branch=main \
+            ${sha:+-f "sha=$sha"} \
+            --jq .commit.sha)
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+
+          # Release notes: the install steps, then this version's changelog section.
+          {
+            cat .github/release-notes.md
+            echo
+            awk -v heading="## [$VERSION]" 'index($0, heading) == 1 { on = 1; next } /^## / { on = 0 } on' CHANGELOG.md
+          } > build/notes.md
 
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.version.outputs.version }}
+          COMMIT: ${{ steps.changelog.outputs.commit }}
         run: |
           gh release create "v$VERSION" \
             "build/TrackEdge-$VERSION.zip" \
             "build/TrackEdge-$VERSION.zip.sha256" \
-            --target "$GITHUB_SHA" \
+            build/TrackEdge.zip \
+            --target "$COMMIT" \
             --title "TrackEdge $VERSION" \
-            --notes-file .github/release-notes.md \
-            --generate-notes
+            --notes-file build/notes.md
