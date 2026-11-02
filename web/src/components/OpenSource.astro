@@ -45,6 +45,10 @@ const numbers = [
           <Icon name="book" size={16} />
           Read the docs
         </a>
+        <a class="btn btn-ghost oss-sponsor" href={repo.sponsor} rel="noopener">
+          <Icon name="heart" size={16} />
+          Sponsor
+        </a>
       </div>
     </div>
 
@@ -123,6 +127,14 @@ const numbers = [
   .code-copy[data-state="copied"] .code-copy-done {
     display: block;
     color: var(--cyan);
+  }
+
+  .oss-sponsor svg {
+    color: #db61a2;
+  }
+
+  .oss-sponsor:hover {
+    border-color: rgb(219 97 162 / 0.55);
   }
 
   .oss-actions {

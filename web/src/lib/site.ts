@@ -12,6 +12,7 @@ export const repo = {
   download: "https://github.com/apurv-1/trackedge/releases/latest/download/TrackEdge.zip",
   readme: "https://github.com/apurv-1/trackedge#readme",
   issues: "https://github.com/apurv-1/trackedge/issues",
+  sponsor: "https://github.com/sponsors/apurv-1",
 };
 
 export const product = {

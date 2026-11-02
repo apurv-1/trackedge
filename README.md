@@ -1,6 +1,30 @@
 <p align="center"><img src="Support/AppIcon.png" width="128" alt="TrackEdge icon"></p>
 
-# TrackEdge
+<h1 align="center">TrackEdge</h1>
+
+<p align="center">Volume and brightness on your trackpad's edges. A free, open-source menu bar app for macOS.</p>
+
+<p align="center">
+  <a href="https://github.com/apurv-1/trackedge/actions/workflows/ci.yml"><img src="https://github.com/apurv-1/trackedge/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
+  <a href="https://github.com/apurv-1/trackedge/releases/latest"><img src="https://img.shields.io/github/v/release/apurv-1/trackedge?label=release" alt="Latest release"></a>
+  <a href="https://github.com/apurv-1/trackedge/releases"><img src="https://img.shields.io/github/downloads/apurv-1/trackedge/total?label=downloads" alt="Total downloads"></a>
+  <img src="https://img.shields.io/badge/macOS-13%2B-0a84ff" alt="Requires macOS 13 or later">
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/apurv-1/trackedge" alt="MIT license"></a>
+  <a href="https://github.com/apurv-1/trackedge/stargazers"><img src="https://img.shields.io/github/stars/apurv-1/trackedge?style=flat" alt="GitHub stars"></a>
+  <a href="https://github.com/sponsors/apurv-1"><img src="https://img.shields.io/badge/sponsor-%E2%99%A5-db61a2" alt="Sponsor on GitHub"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/apurv-1/trackedge/releases/latest/download/TrackEdge.zip"><b>Download</b></a>
+  ·
+  <a href="https://apurv-1.github.io/trackedge/">Website</a>
+  ·
+  <a href="CHANGELOG.md">Changelog</a>
+  ·
+  <a href="CONTRIBUTING.md">Contributing</a>
+  ·
+  <a href="https://github.com/sponsors/apurv-1">Sponsor</a>
+</p>
 
 TrackEdge turns the edges of your MacBook trackpad into volume and brightness sliders.
 Slide a finger along the right edge to change volume, or along the left edge to change brightness.
@@ -83,6 +107,12 @@ TrackEdge restarts touch input when a trackpad or Magic Mouse connects or discon
 - Brightness keys control the built-in display.
   External displays follow whatever macOS does for the brightness keys.
 - Tap to click still clicks when you tap an edge, because macOS handles clicks before TrackEdge sees them.
+
+## Support TrackEdge
+
+TrackEdge is free and stays free.
+If it earns a place in your menu bar, you can [sponsor its development on GitHub](https://github.com/sponsors/apurv-1).
+Starring the repository and reporting bugs help too.
 
 ## Changelog
 

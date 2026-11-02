@@ -38,6 +38,10 @@ export const icons = {
   mouse: { viewBox: "0 0 24 24", paths: ["M12 3a6 6 0 0 1 6 6v6a6 6 0 0 1-12 0V9a6 6 0 0 1 6-6z", "M12 6.5v3.5"] },
   swap: { viewBox: "0 0 24 24", paths: ["M6 7.5h12l-3.2-3.2", "M18 16.5H6l3.2 3.2"] },
   copy: { viewBox: "0 0 24 24", paths: ["M9 9h10.5v11H9z", "M5 15V4h10"] },
+  heart: {
+    viewBox: "0 0 24 24",
+    paths: ["M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"],
+  },
   check: { viewBox: "0 0 24 24", paths: ["M5 12.5l4.5 4.5L19 7.5"] },
   arrowUpRight: { viewBox: "0 0 24 24", paths: ["M7 17L17 7", "M9 7h8v8"] },
   book: { viewBox: "0 0 24 24", paths: ["M4.5 5.5A2.5 2.5 0 0 1 7 3h12.5v15H7a2.5 2.5 0 0 0-2.5 2.5z", "M4.5 5.5v15", "M19.5 18v3H7"] },
